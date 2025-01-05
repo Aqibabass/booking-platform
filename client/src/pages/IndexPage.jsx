@@ -4,7 +4,7 @@ import React from 'react'
 function IndexPage() {
   return (
     <div>
-        <Header/>
+        index page here
       </div>
 
   )

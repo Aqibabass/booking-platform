@@ -1,0 +1,26 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "description": "express aq",
+  "homepage": "https://github.com/Aqibabass/booking-platform#readme",
+  "bugs": {
+    "url": "https://github.com/Aqibabass/booking-platform/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/Aqibabass/booking-platform.git"
+  },
+  "license": "ISC",
+  "author": "aqib",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "axios": "^0.27.2",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "react-axios": "^2.0.6"
+  }
+}
