@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 const User = require('./models/Users.js');
 const { JsonWebTokenError } = require('jsonwebtoken');
 const cookieParser = require('cookie-parser')
-require('dotenv').config('cookie-parser');
+require('dotenv').config();
 const app = express();
 
 
@@ -81,7 +81,11 @@ app.get('/profile', (req, res) => {
     res.json(null);
   }
 
-  res.json({ token });
+  
 });
+
+app.post('/logout', (req,res) => {
+  res.cookie('token', '').json(true);
+})
 
 app.listen(4000);
