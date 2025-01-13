@@ -131,7 +131,7 @@ function PlacesPage() {
                                 onChange={ev => setCheckOut(ev.target.value)}
                                 placeholder='11' />
                             </div>
-                                <Perks/>
+                               
                             <div>
                                 <h3 className='mt-2 -mb-1'>Max Number of Guests</h3>
                                 <input type="number" 
