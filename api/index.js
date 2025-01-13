@@ -8,21 +8,21 @@ const { JsonWebTokenError } = require('jsonwebtoken');
 const cookieParser = require('cookie-parser')
 require('dotenv').config();
 const app = express();
+const imageDownloader=require('image-downloader');
 
 
 const bcryptSalt = bcrypt.genSaltSync(10);
 const jwtSecret = 'fasefrgcgjgcffddhfdh'
 app.use(express.json());
-app.use(cookieParser())
+app.use(cookieParser());
+app.use('/uploads', express.static(__dirname+'/uploads'));
 app.use(cors({
   credentials: true,
   origin: 'http://localhost:5173',
 }));
 
-mongoose.connect(process.env.MONGO_URL, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+mongoose.connect(process.env.MONGO_URL);
+
 
 app.get('/test', (req, res) => {
   res.json('testggh ok');
@@ -86,6 +86,17 @@ app.get('/profile', (req, res) => {
 
 app.post('/logout', (req,res) => {
   res.cookie('token', '').json(true);
+});
+app.post('/upload-by-link',async(req,res) => {
+  const {link} =  req.body;
+  const newName = 'photo' + Date.now() + '.jpg';
+  await imageDownloader.image({
+    url: link,
+    dest:__dirname+'/uploads/' +newName,
+  });
+  res.json(newName);
 })
+
+
 
 app.listen(4000);
