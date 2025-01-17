@@ -1,6 +1,6 @@
 import Perks from '@/Perks';
 import PhotosUploader from '@/PhotosUploader';
-import axios from 'axios';
+
 
 import React from 'react'
 import { useState } from 'react';
@@ -73,7 +73,9 @@ function PlacesPage() {
                             placeholder='address' />
 
                         {preInput('Photos', 'Add multiple photos to showcase your place better.')}
+                        
                         <PhotosUploader addedPhotos={addedPhotos} onChange={setAddedPhotos}/>
+                        
                         {preInput('Description', 'Provide a detailed description of the place.')}
                         <textarea
                             value={description}
