@@ -1,130 +1,72 @@
-import Perks from '@/Perks';
-import PhotosUploader from '@/PhotosUploader';
-
-
-import React from 'react'
-import { useState } from 'react';
-import { Link, useParams } from 'react-router-dom'
+import AccountNav from '@/AccountNav';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 function PlacesPage() {
+  const [places, setPlaces] = useState([]);
+  
+  useEffect(() => {
+    axios.get('/places')
+      .then(({ data }) => {
+        // Set the received data to the places state
+        setPlaces(data);
+      })
+      .catch(error => {
+        console.error("Error fetching places:", error);
+      });
+  }, []);
 
-    const { action } = useParams();
-    const [title, setTitle] = useState('');
-    const [address, setAddress] = useState('');
-    const [addedPhotos, setAddedPhotos] = useState([]);
-
-    
-    const [description, setDescription] = useState('');
-    const [perks, setPerks] = useState([]);
-    const [extraInfo, setExtraInfo] = useState('');
-    const [checkIn, setCheckIn] = useState('');
-    const [checkOut, setCheckOut] = useState('');
-    const [maxGuests, setMaxGuests] = useState(1);
-    function inputHeader(text) {
-        return (
-
-            <h2 className='text-2xl mt-4'>{text}</h2>
-        );
-    }
-    function inputDescription(text) {
-        return (
-            <p className='text-gray-500 text-sm'>{text}</p>
-
-        );
-    }
-    function preInput(header, description) {
-        return (
-            <>
-                {inputHeader(header)}
-                {inputDescription(description)}
-                { }       </>
-        )
-    }
-
-    return (
-        <div>
-            {action !== 'new' && (
-
-                <div className='text-center'>
-                    <Link className='inline-flex gap-1 bg-primary text-white py-2 px-6 rounded-full' to={'/account/places/new'}>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                        </svg>
-
-                        Add new place
-                    </Link>
-
+  return (
+    <div>
+      <AccountNav />
+      <div className="text-center">
+        <Link
+          className="inline-flex gap-1 bg-primary text-white py-2 px-6 rounded-full"
+          to={'/account/places/new'}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="size-6"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M12 4.5v15m7.5-7.5h-15"
+            />
+          </svg>
+          Add new place
+        </Link>
+      </div>
+      <div className='mt-4'>
+        {places.length > 0 ? (
+          places.map(place => (
+            <Link to={'/account/places/'+place._id} key={place._id} className='flex cursor-pointer gap-4 bg-gray-100 p-4 rounded-2xl mb-4'>
+              <div className='w-32 h-32 bg-gray-300 grow shrink-0'>
+                {place.photos.length > 0 && (
+                  <img src={place.photos[0]} alt='' />
+                )}
+              </div>
+              <div>
 
                 </div>
-            )}
-            {action === 'new' && (
-                <div>
-                    <form>
-                        {preInput('Title', 'Provide a catchy title for your place, like an advertisement.')}
-                        <input type='text'
-                            value={title}
-                            onChange={ev => setTitle(ev.target.value)}
-                            placeholder='title, for example My lovely apt' />
 
-                        {preInput('Address', 'Enter the address of this place.')}
-                        <input type='text'
-                            value={address}
-                            onChange={ev => setAddress(ev.target.value)}
-                            placeholder='address' />
-
-                        {preInput('Photos', 'Add multiple photos to showcase your place better.')}
-                        
-                        <PhotosUploader addedPhotos={addedPhotos} onChange={setAddedPhotos}/>
-                        
-                        {preInput('Description', 'Provide a detailed description of the place.')}
-                        <textarea
-                            value={description}
-                            onChange={ev => setDescription(ev.target.value)} />
-
-                        {preInput('Perks', 'Select all the amenities available at your place.')}
-
-                        <div className='grid mt-2 gap-2 grid-cols-2 md:grid-cols-3 lg:grid-cols-6'>
-                            <Perks selected={perks} onChange={setPerks} />
-                        </div>
-
-                        {preInput('Extra Info', 'Include house rules and any other relevant information.')}
-                        <textarea
-                            value={extraInfo}
-                            onChange={ev => setExtraInfo(ev.target.value)} />
-
-                        {preInput('Check-in & Check-out Times', 'Specify check-in and check-out times, ensuring time for cleaning between guests.')}
-                        <div className='grid  gap-2 sm:grid-cols-3'>
-                            <div>
-                                <h3 className='mt-2 -mb-1'>Check in time</h3>
-                                <input type="text" value={checkIn}
-                                    onChange={ev => setCheckIn(ev.target.value)} placeholder='14' />
-                            </div>
-
-                            <div>
-                                <h3 className='mt-2 -mb-1'>Check out time</h3>
-                                <input type="text"
-                                    value={checkOut}
-                                    onChange={ev => setCheckOut(ev.target.value)}
-                                    placeholder='11' />
-                            </div>
-
-                            <div>
-                                <h3 className='mt-2 -mb-1'>Max Number of Guests</h3>
-                                <input type="number"
-                                    value={maxGuests}
-                                    onChange={ev => setMaxGuests(ev.target.value)} />
-                            </div>
-                        </div>
-
-                        <button className='primary my-4'>Save</button>
-
-                    </form>
-                </div>
-            )}
-
-
-        </div>
-    )
+              <div className='grow-0 shrink'>
+                <h2 className='text-xl'>{place.title}</h2> 
+                <p className='tex-sm mt-2'>{place.description}</p> 
+              </div>
+            </Link>
+          ))
+        ) : (
+          <p>No places found.</p>
+        )}
+      </div>
+    </div>
+  );
 }
 
-export default PlacesPage
+export default PlacesPage;
