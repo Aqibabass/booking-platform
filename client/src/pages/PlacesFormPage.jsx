@@ -100,6 +100,7 @@ function PlacesFormPage() {
                 />
 
                 {preInput('Photos', 'Add multiple photos to showcase your place better.')}
+                
                 <PhotosUploader addedPhotos={addedPhotos} onChange={setAddedPhotos} />
 
                 {preInput('Description', 'Provide a detailed description of the place.')}

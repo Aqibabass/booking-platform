@@ -89,6 +89,7 @@ app.get('/profile', (req, res) => {
 app.post('/logout', (req, res) => {
   res.cookie('token', '').json(true);
 });
+
 app.post('/upload-by-link', async (req, res) => {
   const { link } = req.body;
   const newName = 'photo' + Date.now() + '.jpg';
@@ -167,7 +168,7 @@ app.get('/places', (req, res) => {
 
 app.get('/places/:id', async (req, res) => {
   const { id } = req.params;
-  res.json(await Place.findById(id));  // Check if place is returned correctly
+  res.json(await Place.findById(id)); 
 });
 
 app.put('/places', async (req, res) => {
