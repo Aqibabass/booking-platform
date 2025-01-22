@@ -7,14 +7,7 @@ function IndexPage() {
   useEffect(() => {
     axios.get('/places')
       .then(response => {
-        const duplicatedData = [
-          ...response.data,
-          ...response.data,  // 2nd copy
-          ...response.data,  // 3rd copy
-          ...response.data,  // 4th copy
-          ...response.data,  // 5th copy
-        ];
-        setPlaces(duplicatedData);
+        setPlaces(response.data);
       });
   }, []);
 
@@ -32,8 +25,11 @@ function IndexPage() {
               />
             )}
           </div>
-          <h2 className='mt-2 text-sm truncate  text-gray-600'>{place.title}</h2>
-          <h2 className='font-bold  text-gray-600'>{place.address}</h2>
+          <h2 className='font-medium text-xl mt-2 '>{place.title}</h2>
+          <h3 className='mt-2 font-medium  text-gray-600'>📍{place.address}</h3>
+              <div className='mt-2 font-semibold text-lg'>💰
+              ₹{place.price} per night
+              </div>
         </div>
       ))}
     </div>
