@@ -1,3 +1,4 @@
+import BookingWidget from '@/BookingWidget';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
@@ -22,7 +23,7 @@ function PlacePage() {
       <div className='absolute inset-0 bg-black  min-h-screen'>
         <div className='bg-black p-8 grid gap-4'>
           <div>
-            <h2 className='text-2xl text-white'> Photos of {place.title}</h2>
+            <h2 className='text-3xl mr-48 text-white'> Photos of {place.title}</h2>
             <button onClick={() => setShowAllPhotos(false)}
               className='fixed right-12 top-7 flex gap-1 py-2 px-4 rounded-2xl shadow:sm shadow-black bg-white text-black'>
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
@@ -42,10 +43,10 @@ function PlacePage() {
   }
 
   return (
-    <div className='mt-4 bg-gray-50 -mx-8 px-8 py-8'>
+    <div className='mt-4 bg-gray-100 -mx-8 px-8 pt-8'>
       <h1 className='text-3xl'> {place.title}</h1>
 
-      <a className='my-3 flex gap-1 block font-semibold underline' target="_blank"
+      <a className='my-3 flex gap-1 font-semibold underline' target="_blank"
         href={'http://maps.google.com/?q=' + place.address}>
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
           <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
@@ -58,7 +59,7 @@ function PlacePage() {
           <div>
             {place.photos?.[0] && (
               <div>
-                <img className='aspect-square object-cover' src={'http://localhost:4000/uploads/' + place.photos[0]} alt="" />
+                <img onClick={()=> setShowAllPhotos(true)} className='cursor-pointer aspect-square object-cover' src={'http://localhost:4000/uploads/' + place.photos[0]} alt="" />
               </div>
             )}
           </div>
@@ -66,12 +67,12 @@ function PlacePage() {
           <div className='grid'>
             {place.photos?.[1] && (
               <div>
-                <img className='aspect-square object-cover' src={'http://localhost:4000/uploads/' + place.photos[1]} alt="" />
+                <img onClick={()=> setShowAllPhotos(true)} className='cursor-pointer aspect-square object-cover' src={'http://localhost:4000/uploads/' + place.photos[1]} alt="" />
               </div>
             )}
             {place.photos?.[2] && (
               <div className=' overflow-hidden'>
-                <img className='aspect-square object-cover relative top-2 ' src={'http://localhost:4000/uploads/' + place.photos[2]} alt="" />
+                <img  onClick={()=> setShowAllPhotos(true)}className='cursor-pointer aspect-square object-cover relative top-2 ' src={'http://localhost:4000/uploads/' + place.photos[2]} alt="" />
               </div>
 
             )}
@@ -88,8 +89,30 @@ function PlacePage() {
         </button>
       </div>
 
-      <div>
-              for description
+     
+      <div className='mt-8 mb-8 grid gap-8 grid-cols-1 md:grid-cols-[2fr_1fr]'>
+        <div>
+        <div className='my-4'>
+        <h2 className='mb-1 font-semibold text-2xl'> Description</h2>
+        {place.description}
+      </div>
+          Check-in: {place.checkIn} <br />
+          Check-out: {place.checkOut} <br />
+          Max number of guests: {place.maxGuests}
+          
+        </div>
+        <div>
+          
+            <BookingWidget place={place}/>
+
+        </div>
+      </div>
+      <div className="bg-white -mx-8 px-8 py-8 border-t">
+      <div className='mt-4'>
+      <h2 className='font-semibold text-2xl'> Extra info</h2>
+      </div>
+      <div className='mb-4 mt-2 text-sm text-gray-700 leading-5'>{place.extraInfo}</div>
+
       </div>
     </div>
   )
