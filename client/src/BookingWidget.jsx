@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { differenceInCalendarDays } from 'date-fns';
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
+import { UserContext } from './UserContext';
 
 function BookingWidget({ place }) {
     const [checkIn, setCheckIn] = useState('');
@@ -10,6 +11,15 @@ function BookingWidget({ place }) {
     const [name, setName] = useState('');
     const [phone, setphone] = useState('');
     const [redirect, setRedirect] = useState('');
+    const {user}=useContext(UserContext);
+   
+    useEffect(()=>{
+        if (user){
+            setName(user.name);
+        }
+
+    },[user]);
+
     let numberOfNights = 0;
     if (checkIn && checkOut) {
         numberOfNights = differenceInCalendarDays(new Date(checkOut), new Date(checkIn));
@@ -17,7 +27,7 @@ function BookingWidget({ place }) {
 
     async function bookThisPlace() {
        
-      const   response = await axios.post('/bookings', {checkIn, checkOut, numberOfGuests,
+      const  response = await axios.post('/bookings', {checkIn, checkOut, numberOfGuests,
         name, phone, 
         place:place._id,
         price:numberOfNights * place.price,
@@ -70,7 +80,8 @@ function BookingWidget({ place }) {
                         <input
                             type="number"
                             value={numberOfGuests}
-                            onChange={ev => setNumberOfGuests(ev.target.value)}
+                            onChange={ev => setNumberOfGuests(Number(ev.target.value))}
+
                             min={1}
                         />
                     </div>

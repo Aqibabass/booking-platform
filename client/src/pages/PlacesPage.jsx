@@ -1,4 +1,5 @@
 import AccountNav from '@/AccountNav';
+import PlaceImg from '@/PlaceImg';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -51,14 +52,11 @@ function PlacesPage() {
               className="flex flex-col sm:flex-row gap-4 bg-gray-100 p-4 rounded-2xl mb-4"
             >
              
+              
               <div className="flex aspect-video h-sm:w-32 sm:h-32 bg-gray-300 grow-0 shrink-0 overflow-hidden rounded-xl">
-                {place.photos.length > 0 && (
-                  <img
-                    className="object-cover w-full h-full"
-                    src={'http://localhost:4000/uploads/'+place.photos[0]}
-                    alt={place.title}
-                  />
-                )}
+              
+                <PlaceImg place ={place}/>
+             
               </div>
               
               
