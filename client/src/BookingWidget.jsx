@@ -41,7 +41,6 @@ function BookingWidget({ place }) {
     if(redirect) {
         return <Navigate to= {redirect} />
     }
-    
 
     const today = new Date().toISOString().split('T')[0];
 
@@ -51,10 +50,10 @@ function BookingWidget({ place }) {
                 Price: ₹{place.price} / per night
             </div>
 
-            <div className="border rounded-2xl mt-4">
-                <div className="flex">
-                    <div className='my-4 py-3 px-4'>
-                        <label>Check in:</label>
+            <div className="border rounded-2xl items-center mt-4">
+                <div className="flex flex-col">
+                    <div className=' mt-4 px-4'>
+                        <label>Check in: </label>
                         <input
                             type="date"
                             value={checkIn}
@@ -63,8 +62,8 @@ function BookingWidget({ place }) {
                         />
                     </div>
 
-                    <div className='my-4 py-3 px-4 border-l'>
-                        <label>Check out:</label>
+                    <div className='mt-4 px-4'>
+                        <label>Check out: </label>
                         <input
                             type="date"
                             value={checkOut}
