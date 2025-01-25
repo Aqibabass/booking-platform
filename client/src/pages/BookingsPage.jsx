@@ -1,59 +1,78 @@
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import axios from 'axios';
 import AccountNav from '@/AccountNav';
 import BookingDates from '@/BookingDates';
 import PlaceImg from '@/PlaceImg';
-import axios from 'axios';
-import { differenceInCalendarDays, format } from 'date-fns';
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 
 function BookingsPage() {
   const [bookings, setBookings] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios.get('/bookings').then(response => {
-      setBookings(response.data);
-    });
+    const fetchBookings = async () => {
+      setLoading(true);
+      try {
+        const response = await axios.get('/bookings');
+        setBookings(response.data);
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+      }
+    };
+
+    fetchBookings();
   }, []);
+
+  const cancelBooking = async (id) => {
+    try {
+      setBookings(prevBookings => prevBookings.filter(booking => booking._id !== id));
+      await axios.delete(`/bookings/${id}`);
+    } catch (error) {
+      setBookings(prevBookings => [...prevBookings, { _id: id }]);
+    }
+  };
 
   return (
     <div>
       <AccountNav />
-      <div>
-        {bookings?.length > 0 && bookings.map(booking => (
-          <Link to={`/account/bookings/${booking._id}`} className='flex gap-4 bg-gray-200 rounded-2xl overflow-hidden mb-4'>
-            <div className='w-48'>
-              <PlaceImg className='p-3 rounded-3xl object-cover aspect-square' place={booking.place} />
-            </div>
+      <div className="mt-6">
+        {loading ? (
+          <div>Loading...</div>
+        ) : (
+          bookings.map(booking => (
+            <Link
+              key={booking._id}
+              to={`/account/bookings/${booking._id}`}
+              className="flex flex-col sm:flex-row gap-4 bg-gray-100 p-4 rounded-2xl mb-4"
+            >
+              <div className="flex aspect-video sm:w-60 bg-gray-300 grow-0 shrink-0 overflow-hidden rounded-xl">
+                <PlaceImg className="w-full h-full aspect-video object-cover" place={booking.place} />
+              </div>
 
-            <div className='py-3 pr-3 grow'>
-              <h2 className='text-xl'>{booking.place.title}</h2>
+              <div className="grow sm:ml-4 px-1">
+                <h2 className="text-xl font-semibold">{booking.place.title}</h2>
+                <BookingDates booking={booking} className="text-sm mt-2 text-gray-600 mb-2" />
 
-
-              <div className='text-xl'>
-
-                
-<BookingDates booking={booking} className='mb-2 mt-4 text-gray-500'/>
-
-
-
-                <div className="flex gap-1 items-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-8">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Z" />
-                  </svg>
-
-
-                  <span className='text-2xl'>
-
+                <div className="mt-2 flex gap-1 items-center">
+                  <span className="text-lg font-semibold">
                     Total price: ₹{booking.price}
                   </span>
-
                 </div>
-
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    cancelBooking(booking._id);
+                  }}
+                  className="mt-2 text-sm sm:text-base px-3 py-2 rounded-xl text-white hover:bg-red-600 transition-all bg-red-500"
+                >
+                  Cancel Booking
+                </button>
               </div>
-            </div>
-          </Link>
-
-        ))}
+            </Link>
+          ))
+        )}
       </div>
     </div>
   );

@@ -1,18 +1,20 @@
 import React, { useState } from 'react';
-
+import { CgMenuGridO } from "react-icons/cg";
 function PlaceGallery({ place }) {
   const [showAllPhotos, setShowAllPhotos] = useState(false);
 
 
   if (showAllPhotos) {
     return (
-      <div className="absolute inset-0 bg-white min-h-screen">
+      <div className="absolute inset-0 bg-white  min-h-screen">
         <div className="bg-white p-4 sm:p-8 grid gap-4">
           <div>
             <h2 className="text-2xl sm:text-3xl text-black mr-0 sm:mr-48">Photos of {place.title}</h2>
             <button
               onClick={() => setShowAllPhotos(false)}
-              className="fixed right-4 sm:right-12 top-4 sm:top-7 flex gap-1 py-2 px-4 rounded-2xl shadow-sm shadow-white bg-black text-white"
+              className="fixed right-4 sm:right-12 top-4 sm:top-7 flex gap-1 py-2 px-4 
+              rounded-2xl shadow-md shadow-gray-400
+               bg-red-500 text-white hover:bg-red-700 transition-all"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -84,23 +86,12 @@ function PlaceGallery({ place }) {
       
       <button
   onClick={() => setShowAllPhotos(true)}
-  className="flex gap-1 items-center text-sm absolute bottom-2 right-2 px-4 py-2 bg-white rounded-2xl shadow-sm shadow-gray-500"
+  className="flex gap-1 border-black  font-medium 
+  items-center text-sm absolute bottom-2 right-2 px-4 py-2
+   bg-white rounded-xl shadow-sm shadow-gray-500 hover:bg-slate-50 transition-all"
 >
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    fill="none"
-    viewBox="0 0 24 24"
-    strokeWidth={1.5}
-    stroke="currentColor"
-    className="w-5 h-5"
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"
-    />
-  </svg>
-  <span className="hidden sm:block">Show more photos</span>
+<CgMenuGridO className='size-4' />
+  <span className="hidden sm:block">Show all photos</span>
 </button>
 
     </div>

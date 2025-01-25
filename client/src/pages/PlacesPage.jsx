@@ -6,16 +6,21 @@ import { Link } from 'react-router-dom';
 
 function PlacesPage() {
   const [places, setPlaces] = useState([]);
-  
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
-    axios.get('/user-places')
-      .then(({ data }) => {
-      
+    const fetchPlaces = async () => {
+      try {
+        const { data } = await axios.get('/user-places');
         setPlaces(data);
-      })
-      .catch(error => {
-        console.error("Error fetching places:", error);
-      });
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching places:', error);
+        setLoading(false);
+      }
+    };
+
+    fetchPlaces();
   }, []);
 
   return (
@@ -44,22 +49,18 @@ function PlacesPage() {
         </Link>
       </div>
       <div className="mt-6">
-        {places.length > 0 ? (
+        {loading ? (
+          <div>Loading...</div>
+        ) : places.length > 0 ? (
           places.map(place => (
             <Link 
-              to={'/account/places/'+place._id} 
+              to={'/account/places/' + place._id} 
               key={place._id} 
               className="flex flex-col sm:flex-row gap-4 bg-gray-100 p-4 rounded-2xl mb-4"
             >
-             
-              
               <div className="flex aspect-video h-sm:w-32 sm:h-32 bg-gray-300 grow-0 shrink-0 overflow-hidden rounded-xl">
-              
-                <PlaceImg place ={place}/>
-             
+                <PlaceImg place={place} />
               </div>
-              
-              
               <div className="grow sm:ml-4 px-1">
                 <h2 className="text-xl font-semibold">{place.title}</h2>
                 <p className="text-sm mt-2 text-gray-600 line-clamp-3">{place.description}</p>

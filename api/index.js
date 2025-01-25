@@ -13,7 +13,6 @@ const imageDownloader = require('image-downloader');
 const multer = require('multer');
 const fs = require('fs');
 
-
 const bcryptSalt = bcrypt.genSaltSync(10);
 const jwtSecret = 'fasefrgcgjgcffddhfdh'
 app.use(express.json());
@@ -168,8 +167,17 @@ app.get('/user-places', (req, res) => {
 
 app.get('/places/:id', async (req, res) => {
   const { id } = req.params;
-  res.json(await Place.findById(id));
+  
+  // Use populate to include the owner data (assuming `owner` is a reference to the `User` model)
+  const place = await Place.findById(id).populate('owner', 'name');  // Populate only the 'name' field of the owner
+  
+  if (!place) {
+    return res.status(404).json({ error: 'Place not found' });
+  }
+
+  res.json(place);
 });
+
 
 app.put('/places', async (req, res) => {
   const { token } = req.cookies;
@@ -221,5 +229,24 @@ app.post('/bookings', async(req, res) => {
 app.get('/bookings', async (req,res)=>{
   const userData = await getUserDataFromReq(req);
   res.json(await Booking.find({user:userData.id}).populate('place'));
+});
+app.delete('/bookings/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    // Attempt to delete the booking
+    const deletedBooking = await Booking.findByIdAndDelete(id);
+
+    // If no booking found with the provided ID
+    if (!deletedBooking) {
+      return res.status(404).json({ message: 'Booking not found' });
+    }
+
+    // Success response
+    res.status(200).json({ message: 'Booking canceled successfully' });
+  } catch (error) {
+    console.error('Error canceling booking:', error);
+    res.status(500).json({ message: 'Server error while canceling booking' });
+  }
 });
 app.listen(4000);
