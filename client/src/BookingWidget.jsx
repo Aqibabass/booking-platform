@@ -9,37 +9,60 @@ function BookingWidget({ place }) {
     const [checkOut, setCheckOut] = useState('');
     const [numberOfGuests, setNumberOfGuests] = useState(1);
     const [name, setName] = useState('');
-    const [phone, setphone] = useState('');
+    const [phone, setPhone] = useState('');
     const [redirect, setRedirect] = useState('');
-    const {user}=useContext(UserContext);
-   
-    useEffect(()=>{
-        if (user){
+    const { user } = useContext(UserContext);
+
+    useEffect(() => {
+        if (user) {
             setName(user.name);
         }
-
-    },[user]);
+    }, [user]);
 
     let numberOfNights = 0;
     if (checkIn && checkOut) {
         numberOfNights = differenceInCalendarDays(new Date(checkOut), new Date(checkIn));
     }
 
-    async function bookThisPlace() {
-       
-      const  response = await axios.post('/bookings', {checkIn, checkOut, numberOfGuests,
-        name, phone, 
-        place:place._id,
-        price:numberOfNights * place.price,
-    });
-   
-    const bookingId = response.data._id;
-   
-    setRedirect(`/account/bookings/${bookingId}`);
-    }
-   
-    if(redirect) {
-        return <Navigate to= {redirect} />
+    const isFormValid = () => {
+        return checkIn && checkOut && numberOfGuests > 0 && name.trim() && phone.trim();
+    };
+
+    const bookThisPlace = async () => {
+        // Validate form before checking login status
+        if (!isFormValid()) {
+            alert('Please fill all fields!');
+            return;
+        }
+
+        // Check login status
+        if (!user) {
+            alert('Please login to book a place!');
+            return;
+        }
+
+        // If all checks pass, proceed to book the place
+        try {
+            const response = await axios.post('/bookings', {
+                checkIn,
+                checkOut,
+                numberOfGuests,
+                name,
+                phone,
+                place: place._id,
+                price: numberOfNights * place.price,
+            });
+
+            const bookingId = response.data._id;
+            setRedirect(`/account/bookings/${bookingId}`);
+        } catch (error) {
+            console.error('Booking failed:', error);
+            alert('There was an error processing your booking. Please try again.');
+        }
+    };
+
+    if (redirect) {
+        return <Navigate to={redirect} />;
     }
 
     const today = new Date().toISOString().split('T')[0];
@@ -52,7 +75,7 @@ function BookingWidget({ place }) {
 
             <div className="border rounded-2xl items-center mt-4">
                 <div className="flex flex-col">
-                    <div className=' mt-4 px-4'>
+                    <div className='mt-4 px-4'>
                         <label>Check in: </label>
                         <input
                             type="date"
@@ -71,47 +94,46 @@ function BookingWidget({ place }) {
                             min={checkIn || today}
                         />
                     </div>
-                </div>
-
-                <div>
                     <div className='my-4 py-3 px-4 border-t'>
-                        <label>Number of guests:</label>
-                        <input
-                            type="number"
-                            value={numberOfGuests}
-                            onChange={ev => setNumberOfGuests(Number(ev.target.value))}
-
-                            min={1}
-                        />
-                    </div>
-                    {numberOfNights > 0 && (
-                        <div className='my-4 py-3 px-4 border-t'>
-                            <label>Your Name:</label>
+                            <label>Number of guests:</label>
                             <input
-                                type="text"
-                                value={name}
-                                onChange={ev => setName(ev.target.value)}
+                                type="number"
+                                value={numberOfGuests}
+                                onChange={ev => setNumberOfGuests(Number(ev.target.value))}
+                                min={1}
                             />
-
-                            <label>Phone Number:</label>
-                            <input
-                                type="tel"
-                                value={phone}
-                                onChange={ev => setphone(ev.target.value)}
-                            />
-
                         </div>
-
-                    )}
                 </div>
+
+                
+                {checkIn && checkOut && (
+                    <>
+                       
+
+                        {numberOfNights > 0 && (
+                            <div className='my-4 py-3 px-4 border-t'>
+                                <label>Your Name:</label>
+                                <input
+                                    type="text"
+                                    value={name}
+                                    onChange={ev => setName(ev.target.value)}
+                                />
+
+                                <label>Phone Number:</label>
+                                <input
+                                    type="tel"
+                                    value={phone}
+                                    onChange={ev => setPhone(ev.target.value)}
+                                />
+                            </div>
+                        )}
+                    </>
+                )}
             </div>
 
-            <button onClick={bookThisPlace}
-            className='primary mt-4'>
+            <button onClick={bookThisPlace} className='primary mt-4'>
                 Book this place
-                {numberOfNights > 0 && (
-                    <span> ₹{numberOfNights * place.price}</span>
-                )}
+                {numberOfNights > 0 && <span> ₹{numberOfNights * place.price}</span>}
             </button>
         </div>
     );
