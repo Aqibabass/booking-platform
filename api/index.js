@@ -249,4 +249,29 @@ app.delete('/bookings/:id', async (req, res) => {
     res.status(500).json({ message: 'Server error while canceling booking' });
   }
 });
+
+app.put('/update-profile', async (req, res) => {
+  const { token } = req.cookies;
+  const { username, password } = req.body;
+
+  jwt.verify(token, jwtSecret, {}, async (err, userData) => {
+    if (err) {
+      return res.status(401).json({ message: 'Unauthorized' });
+    }
+
+    const user = await User.findById(userData.id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Update fields
+    user.name = username || user.name;
+    if (password) {
+      user.password = bcrypt.hashSync(password, bcryptSalt);
+    }
+
+    await user.save();
+    res.json({ message: 'Profile updated successfully', user });
+  });
+});
 app.listen(4000);

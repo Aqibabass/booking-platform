@@ -7,7 +7,7 @@ function Header({ handleSearch }) {
   const location = useLocation();
 
   return (
-    <div className=' bg-white -mx-8 px-8 py-4 border-b'>
+    <div className=' bg-white -mx-6 px-8 py-4 '>
       <header className="flex w-auto justify-between">
 
         <Link to={'/index'} className="flex items-center gap-1">
