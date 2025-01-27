@@ -1,90 +1,92 @@
-import { UserContext } from '@/UserContext';
-import axios from 'axios';
-import React, { useState, useContext } from 'react';
-import { Navigate, useParams } from 'react-router-dom';
-import PlacesPage from './PlacesPage';
-import AccountNav from '@/AccountNav';
-import ProfileCard from '@/components/ProfileCard';
+import React, { useState } from 'react';
+import { VscEye, VscEyeClosed } from 'react-icons/vsc';
 
+function ProfileCard({ user, onSave, onCancel }) {
+  const [username, setUsername] = useState(user?.name || '');
+  const [email] = useState(user?.email || '');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [error, setError] = useState('');
 
-function ProfilePage() {
-  const [redirect, setRedirect] = useState(null);
-  const { ready, user, setUser } = useContext(UserContext);
-  const [isEditing, setIsEditing] = useState(false); // State to control edit form visibility
-
-  let { subpage } = useParams();
-  if (subpage === undefined) {
-    subpage = 'profile';
-  }
-
-  async function logout() {
-    await axios.post('/logout');
-    setRedirect('/');
-    setUser(null);
-  }
-
-  async function handleUpdateProfile(updatedDetails) {
-    try {
-      const response = await axios.put('/update-profile', updatedDetails);
-      setUser((prev) => ({
-        ...prev,
-        name: updatedDetails.username,
-        email: updatedDetails.email,
-      }));
-      setIsEditing(false); // Close edit mode
-    } catch (error) {
-      console.error('Failed to update profile:', error);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (password !== confirmPassword) {
+      setError('Passwords do not match');
+      return;
     }
-  }
-
-  if (!ready) {
-    return 'Loading...';
-  }
-
-  if (ready && !user && !redirect) {
-    return <Navigate to={'/login'} />;
-  }
-
-  if (redirect) {
-    return <Navigate to={redirect} />;
-  }
+    setError('');
+    onSave({ username, email, password });
+  };
 
   return (
-    <div>
-      <AccountNav />
-      {subpage === 'profile' && (
-        <div className="text-center max-w-lg mx-auto">
-          <h2 className="text-xl font-bold mb-4">Profile</h2>
-          {!isEditing ? (
-            <div className='text-left'>
-              <p>
-                <strong>Username:</strong> {user?.name || 'Guest'}
-              </p>
-              <p>
-                <strong>Email:</strong> {user?.email || 'guest@example.com'}
-              </p>
-              <button
-                onClick={() => setIsEditing(true)}
-                className="primary hover:bg-cyan-400 mt-4"
-              >
-                Edit Profile
-              </button>
-            </div>
-          ) : (
-            <ProfileCard
-              user={user}
-              onSave={handleUpdateProfile}
-              onCancel={() => setIsEditing(false)}
-            />
-          )}
-          <button onClick={logout} className="primary hover:bg-red-400 mt-4">
-            Logout
+    <form onSubmit={handleSubmit} className="border p-4 rounded-2xl space-y-4">
+      <div>
+        <label className="block text-left mb-1">Email</label>
+        <input
+          type="email"
+          value={email}
+          disabled
+          className="cursor-not-allowed w-full border border-1 p-2 rounded bg-gray-100"
+        />
+      </div>
+      <div>
+        <label className="block text-left mb-1">Username</label>
+        <input
+          type="text"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          className="w-full border p-2 rounded"
+        />
+      </div>
+      <div>
+        <label className="block text-left mb-1">Password</label>
+        <div className="relative">
+          <input
+            type={showPassword ? 'text' : 'password'}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full border p-2 rounded"
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute right-2 top-1/2 transform -translate-y-1/2 text-xl"
+          >
+            {showPassword ? <VscEyeClosed /> : <VscEye />}
           </button>
         </div>
-      )}
-      {subpage === 'places' && <PlacesPage />}
-    </div>
+      </div>
+      <div>
+        <label className="block text-left mb-1">Confirm Password</label>
+        <div className="relative">
+          <input
+            type={showConfirmPassword ? 'text' : 'password'}
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            className="w-full border p-2 rounded"
+          />
+          <button
+            type="button"
+            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+            className="absolute right-2 top-1/2 transform -translate-y-1/2 text-xl"
+          >
+            {showConfirmPassword ? <VscEyeClosed /> : <VscEye />}
+          </button>
+        </div>
+      </div>
+      {error && <p className="text-red-500">{error}</p>}
+      <div className="flex gap-4">
+        <button type="submit" className="primary max-w-sm">
+          Save Changes
+        </button>
+        <button type="button" onClick={onCancel} className="primary">
+          Cancel
+        </button>
+      </div>
+    </form>
   );
 }
 
-export default ProfilePage;
+export default ProfileCard;

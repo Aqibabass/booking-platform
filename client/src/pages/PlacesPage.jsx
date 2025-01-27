@@ -68,7 +68,8 @@ function PlacesPage() {
             </Link>
           ))
         ) : (
-          <p>No places found.</p>
+         
+          <p className="items-center text-xl font-bold mb-4">No places found.</p>
         )}
       </div>
     </div>
