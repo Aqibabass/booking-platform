@@ -36,7 +36,7 @@ function ProfileCard({ user, onSave, onCancel }) {
           type="email"
           value={email}
           disabled
-          className="cursor-not-allowed w-full border border-1 p-2 rounded bg-gray-50"
+          className="cursor-not-allowed w-full text-gray-600 border border-1 p-2 rounded bg-gray-50"
         />
       </div>
       <div>

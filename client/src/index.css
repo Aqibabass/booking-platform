@@ -53,3 +53,6 @@ button.primary{
     background-color: #0d9488;
     @apply bg-primary p-2 w-full text-white rounded-2xl
 }
+input:focus {
+  outline: none;
+}

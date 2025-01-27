@@ -56,7 +56,7 @@ function ProfilePage() {
         <div className="text-center max-w-lg mx-auto">
           <h2 className="text-xl font-bold mb-4">Profile</h2>
           {!isEditing ? (
-            <div className='text-left'>
+            <div className='text-left text-gray-600'>
              <div className='items-center border p-4 rounded-2xl'>
 
                <p>
@@ -81,9 +81,9 @@ function ProfilePage() {
               onCancel={() => setIsEditing(false)}
             />
           )}
-          <button onClick={logout} className="primary hover:bg-red-400 mt-4">
-            Logout
-          </button>
+          <button onClick={logout} className="primary hover:bg-red-400 mt-4 mb-8">
+  Logout
+</button>
         </div>
       )}
       {subpage === 'places' && <PlacesPage />}

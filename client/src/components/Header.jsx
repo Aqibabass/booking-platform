@@ -39,7 +39,7 @@ function Header({ handleSearch }) {
             <input
               type="search"
               placeholder="Search..."
-              className="flex-grow bg-transparent outline-none text-sm placeholder-gray-500"
+              className="flex-grow border-none focus:border-none bg-transparent outline-none text-sm placeholder-gray-500"
               onChange={(e) => handleSearch(e.target.value)}
             />
             <button className="bg-primary text-white p-2 rounded-full">

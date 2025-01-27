@@ -39,6 +39,9 @@ function BookingsPage() {
       <div className="mt-6">
         {loading ? (
           <div>Loading...</div>
+        ) : bookings.length === 0 ? (
+          <div className="items-center text-xl font-bold mb-4">No bookings available</div>
+          
         ) : (
           bookings.map(booking => (
             <Link
