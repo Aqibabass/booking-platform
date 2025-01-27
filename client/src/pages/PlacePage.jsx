@@ -7,13 +7,13 @@ import { useParams } from 'react-router-dom';
 
 import { FaWifi, FaParking, FaTv, FaPaw } from 'react-icons/fa';
 import { HiOutlineRadio } from "react-icons/hi2";
-import { MdAcUnit, MdPets, MdLock } from 'react-icons/md'; // Added Air Conditioning and Lock icons
+import { MdAcUnit, MdLock } from 'react-icons/md';
 import { AiOutlineHome } from 'react-icons/ai';
 
 function PlacePage() {
   const { id } = useParams();
   const [place, setPlace] = useState(null);
-  const [isExpanded, setIsExpanded] = useState(false); // State for toggling description
+  const [isExpanded, setIsExpanded] = useState(false);
 
   useEffect(() => {
     if (!id) {
@@ -29,10 +29,10 @@ function PlacePage() {
 
   if (!place) return <div>Loading...</div>;
 
-  const toggleDescription = () => setIsExpanded(prev => !prev); // Toggle function for description
+  const toggleDescription = () => setIsExpanded(prev => !prev);
 
   const descriptionText = place.description;
-  const shortenedDescription = descriptionText.length > 630 ? descriptionText.slice(0, 630) + '...' : descriptionText; // Truncate if too long
+  const shortenedDescription = descriptionText.length > 630 ? descriptionText.slice(0, 630) + '...' : descriptionText;
 
   return (
     <div className='mt-2 -mx-8 px-8 pt-4'>
@@ -46,7 +46,7 @@ function PlacePage() {
 
       <div className='mt-4 mb-4 grid gap-8 grid-cols-1 md:grid-cols-[2fr_1fr]'>
         <div>
-          <div className="mb-6 ">
+          <div className="mb-6">
             <h2 className="mb-2 font-semibold text-2xl">Description</h2>
             <p className="text-justify text-gray-700">
               {isExpanded ? descriptionText : shortenedDescription}
