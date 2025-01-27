@@ -274,4 +274,19 @@ app.put('/update-profile', async (req, res) => {
     res.json({ message: 'Profile updated successfully', user });
   });
 });
+app.delete('/places/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const deletedPlace = await Place.findByIdAndDelete(id);
+    if (!deletedPlace) {
+      return res.status(404).json({ error: 'Place not found' });
+    }
+
+    res.status(200).json({ message: 'Place deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting place:', error);
+    res.status(500).json({ error: 'Server error while deleting place' });
+  }
+});
 app.listen(4000);

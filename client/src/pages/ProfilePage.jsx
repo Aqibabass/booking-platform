@@ -10,7 +10,7 @@ import ProfileCard from '@/components/ProfileCard';
 function ProfilePage() {
   const [redirect, setRedirect] = useState(null);
   const { ready, user, setUser } = useContext(UserContext);
-  const [isEditing, setIsEditing] = useState(false); // State to control edit form visibility
+  const [isEditing, setIsEditing] = useState(false); 
 
   let { subpage } = useParams();
   if (subpage === undefined) {
