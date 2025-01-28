@@ -22,7 +22,7 @@ function Hero() {
                     Book Your Stay
                     </button>
                 </Link>
-                <Link to={'/index'}>
+                <Link to={'/create-trip'}>
                     <button className="px-4 py-3 rounded-2xl bg-primary text-white">
                     Discover Experiences
                     </button>

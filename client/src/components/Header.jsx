@@ -1,15 +1,27 @@
 import { UserContext } from '@/UserContext';
-import React, { useContext } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import React, { useContext, useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 function Header({ handleSearch }) {
-  const { user } = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
   const location = useLocation();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const logout = async () => {
+    try {
+      await axios.post('/logout');
+      setUser(null);
+      navigate('/');
+    } catch (err) {
+      console.error('Logout failed', err);
+    }
+  };
 
   return (
-    <div className=' bg-white -mx-6 px-8 py-4 '>
-      <header className="flex w-auto justify-between">
-
+    <div className="bg-white -mx-6 px-8 py-4">
+      <header className="flex w-auto justify-between items-center relative">
         <Link to={'/index'} className="flex items-center gap-1">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -32,46 +44,76 @@ function Header({ handleSearch }) {
           <span className="font-bold text-xl hidden sm:block">TravelMate AI</span>
         </Link>
 
-
-
-        {location.pathname === '/index' && (
-          <div className="bg-white border border-gray-300 rounded-full shadow-md px-4 flex items-center gap-2">
-            <input
-              type="search"
-              placeholder="Search..."
-              className="flex-grow border-none focus:border-none bg-transparent outline-none text-sm placeholder-gray-500"
-              onChange={(e) => handleSearch(e.target.value)}
-            />
-            <button className="bg-primary text-white p-2 rounded-full">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 512 512" className="w-4 h-4">
-                <path d="M456.69 421.39 362.6 327.3a173.81 173.81 0 0 0 34.84-104.58C397.44 126.38 319.06 48 222.72 
-                48S48 126.38 48 222.72s78.38 174.72 174.72 174.72A173.81 173.81 0 0 0 327.3 362.6l94.09 94.09a25 25 0 0 0
-                 35.3-35.3zM97.92 222.72a124.8 124.8 0 1 1 124.8 124.8 124.95 124.95 0 0 1-124.8-124.8z"></path>
-              </svg>
-            </button>
-          </div>
-        )}
-
-
-        <Link
-          to={user ? '/account' : '/login'}
-          className="flex items-center gap-2 border border-gray-300 rounded-full  py-2 px-4 shadow-md shadow-gray-300"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-          </svg>
-          <div className="bg-gray-500 text-white rounded-full border border-gray-500 overflow-hidden">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-6 relative top-1">
-              <path
-                fillRule="evenodd"
-                d="M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 0 1-.437-.695Z"
-                clipRule="evenodd"
+        <div className="flex items-center gap-4">
+          {location.pathname === '/index' && (
+            <div className="flex bg-transparent items-center gap-2 border border-gray-300 rounded-full py-1 px-2 shadow-md shadow-gray-300">
+              <input
+                type="search"
+                placeholder="Search destinations"
+                className="flex-grow border-none focus:border-none bg-transparent outline-none text-sm placeholder-gray-500"
+                onChange={(e) => handleSearch(e.target.value)}
               />
+              <button className="bg-primary items-center text-white p-2 rounded-full">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 512 512" className="w-4 h-4">
+                  <path d="M456.69 421.39 362.6 327.3a173.81 173.81 0 0 0 34.84-104.58C397.44 126.38 319.06 48 222.72 
+                  48S48 126.38 48 222.72s78.38 174.72 174.72 174.72A173.81 173.81 0 0 0 327.3 362.6l94.09 94.09a25 25 0 0 0
+                  35.3-35.3zM97.92 222.72a124.8 124.8 0 1 1 124.8 124.8 124.95 124.95 0 0 1-124.8-124.8z"></path>
+                </svg>
+              </button>
+            </div>
+          )}
+        </div>
+
+        <div className="flex items-center gap-4 hidden md:flex">
+          <Link to="/stays" className="text-gray-600 hover:text-primary">Stays</Link>
+          <Link to="/experiences" className="text-gray-600 hover:text-primary">Experiences</Link>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <button
+            className="flex bg-transparent items-center gap-2 border border-gray-300 rounded-full py-2 px-4 shadow-md shadow-gray-300"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
             </svg>
-          </div>
-          {!!user && <div>{user.name}</div>}
-        </Link>
+            <div className="bg-gray-500 text-white rounded-full border border-gray-500 overflow-hidden">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-6 relative top-1">
+                <path
+                  fillRule="evenodd"
+                  d="M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 0 1-.437-.695Z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </div>
+            <div className="hidden sm:block">{user?.name}</div>
+          </button>
+        </div>
       </header>
+
+      {isMenuOpen && (
+        <div className="bg-white border border-gray-300 rounded-lg mt-4 p-4">
+          <Link to="'/index'" className="block text-gray-600 hover:text-primary py-2">Stays</Link>
+          <Link to="/create-trip" className="block text-gray-600 hover:text-primary py-2">Experiences</Link>
+
+          {!user ? (
+            <>
+              <Link to="/login" className="block text-gray-600 hover:text-primary py-2">Login</Link>
+              <Link to="/register" className="block text-gray-600 hover:text-primary py-2">Register</Link>
+            </>
+          ) : (
+            <>
+              <Link to="/account" className="block text-gray-600 hover:text-primary py-2">Account</Link>
+              <button
+                className="block text-gray-600 bg-transparent text-underline hover:text-primary py-2"
+                onClick={logout}
+              >
+                Logout
+              </button>
+            </>
+          )}
+        </div>
+      )}
     </div>
   );
 }
