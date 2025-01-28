@@ -20,7 +20,7 @@ function Header({ handleSearch }) {
     }
   };
 
-
+  // Close the menu when the location changes
   useEffect(() => {
     setIsMenuOpen(false);
   }, [location]);
@@ -53,10 +53,13 @@ function Header({ handleSearch }) {
           )}
         </div>
 
-        <div className="flex items-center gap-4 hidden md:flex">
-          <Link to="/stays" className="text-gray-600 hover:text-primary">Stays</Link>
-          <Link to="/create-trip" className="text-gray-600 hover:text-primary">Experiences</Link>
-        </div>
+        {/* Hide Stays and Experiences buttons on the root path */}
+        {location.pathname !== '/' && (
+          <div className="flex items-center gap-4 hidden md:flex">
+            <Link to="/stays" className="text-gray-600 hover:text-primary">Stays</Link>
+            <Link to="/create-trip" className="text-gray-600 hover:text-primary">Experiences</Link>
+          </div>
+        )}
 
         <div className="flex items-center gap-2">
           <button
