@@ -55,33 +55,41 @@ app.post('/register', async (req, res) => {
     res.status(422).json(e);
   }
 });
-
 app.post('/login', async (req, res) => {
   const { email, password } = req.body;
-  const userDoc = await User.findOne({ email });
 
-  if (userDoc) {
+  try {
+    // Find the user by email
+    const userDoc = await User.findOne({ email });
+    if (!userDoc) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Check if the password is correct
     const passOk = bcrypt.compareSync(password, userDoc.password);
-    if (passOk) {
-      jwt.sign({
-        email: userDoc.email,
-        id: userDoc._id
-      },
-        jwtSecret, {}, (err, token) => {
-          if (err) throw err;
-          res.cookie('token', token).json(userDoc);
-        });
+    if (!passOk) {
+      return res.status(401).json({ message: 'Invalid email or password' });
+    }
 
-    }
-    else {
-      res.status(422).json('pass not ok');
-    }
-  } else {
-    res.json('not found');
+    //  Generate a JWT token
+    jwt.sign(
+      { email: userDoc.email, id: userDoc._id },
+      jwtSecret,
+      {}, 
+      (err, token) => {
+        if (err) throw err;
+
+        // Send token and user details
+        res.cookie('token', token, { httpOnly: true }).json(userDoc); // Send userDoc back
+      }
+    );
+  } catch (error) {
+    console.error('Error during login:', error);
+    res.status(500).json({ message: 'Server error. Please try again later.' });
   }
 });
 
-app.get('/profile', (req, res) => {
+app.get('/profile', async(req, res) => {
   const { token } = req.cookies;
   if (token) {
     jwt.verify(token, jwtSecret, {}, async (err, userData) => {

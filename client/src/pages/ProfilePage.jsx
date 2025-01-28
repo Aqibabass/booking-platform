@@ -60,10 +60,10 @@ function ProfilePage() {
              <div className='items-center border p-4 rounded-2xl'>
 
                <p>
-                <strong>Username:</strong> {user?.name || 'Guest'}
+                <strong>Username:</strong> {user?.name}
               </p>
               <p>
-                <strong>Email:</strong> {user?.email || 'guest@example.com'}
+                <strong>Email:</strong> {user?.email}
               </p>
              </div>
              

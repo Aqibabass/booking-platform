@@ -20,7 +20,10 @@ function Header({ handleSearch }) {
     }
   };
 
-  // Close the menu when the location changes
+  const closeMenu = () => {
+    setIsMenuOpen(false);
+  };
+
   useEffect(() => {
     setIsMenuOpen(false);
   }, [location]);
@@ -53,10 +56,9 @@ function Header({ handleSearch }) {
           )}
         </div>
 
-        {/* Hide Stays and Experiences buttons on the root path */}
         {location.pathname !== '/' && (
-          <div className="flex items-center gap-4 hidden md:flex">
-            <Link to="/stays" className="text-gray-600 hover:text-primary">Stays</Link>
+          <div className="items-center gap-4 hidden md:flex">
+            <Link to="/index" className="text-gray-600 hover:text-primary">Stays</Link>
             <Link to="/create-trip" className="text-gray-600 hover:text-primary">Experiences</Link>
           </div>
         )}
@@ -84,27 +86,49 @@ function Header({ handleSearch }) {
       </header>
 
       {isMenuOpen && (
-        <div className="bg-white border border-gray-300 rounded-lg mt-4 p-4">
-          <Link to="/index" className="block text-gray-600 hover:text-primary py-2">Stays</Link>
-          <Link to="/create-trip" className="block text-gray-600 hover:text-primary py-2">Experiences</Link>
+        <ul className="menu border bg-white rounded-box mr-6 w-max mt-2 p-4 shadow-lg z-50 absolute right-0 top-16">
+          <li>
+            <Link to="/index" className="block text-gray-600 hover:bg-gray-200 py-2 px-4 rounded" onClick={closeMenu}>
+              Stays
+            </Link>
+          </li>
+          <li>
+            <Link to="/create-trip" className="block text-gray-600 hover:bg-gray-200 py-2 px-4 rounded" onClick={closeMenu}>
+              Experiences
+            </Link>
+          </li>
 
           {!user ? (
             <>
-              <Link to="/login" className="block text-gray-600 hover:text-primary py-2">Login</Link>
-              <Link to="/register" className="block text-gray-600 hover:text-primary py-2">Register</Link>
+              <li>
+                <Link to="/login" className="block text-gray-600 hover:bg-gray-200  py-2 px-4 rounded" onClick={closeMenu}>
+                  Login
+                </Link>
+              </li>
+              <li>
+                <Link to="/register" className="block text-gray-600 hover:bg-gray-200  py-2 px-4 rounded" onClick={closeMenu}>
+                  Register
+                </Link>
+              </li>
             </>
           ) : (
             <>
-              <Link to="/account" className="block text-gray-600 hover:text-primary py-2">Account</Link>
-              <button
-                className="block text-gray-600 bg-transparent text-underline hover:text-primary hover:underline py-2"
-                onClick={logout}
-              >
-                Logout
-              </button>
+              <li>
+                <Link to="/account" className="block text-gray-600 hover:bg-gray-200  py-2 px-4 rounded" onClick={closeMenu}>
+                  Account
+                </Link>
+              </li>
+              <li>
+                <button
+                  className="block bg-white text-gray-600 hover:bg-gray-200  hover:underline py-2 px-4 rounded"
+                  onClick={() => { logout(); closeMenu(); }}
+                >
+                  Logout
+                </button>
+              </li>
             </>
           )}
-        </div>
+        </ul>
       )}
     </div>
   );
