@@ -1,5 +1,5 @@
 import { UserContext } from '@/UserContext';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { LuMapPinHouse } from "react-icons/lu";
@@ -20,11 +20,16 @@ function Header({ handleSearch }) {
     }
   };
 
+
+  useEffect(() => {
+    setIsMenuOpen(false);
+  }, [location]);
+
   return (
     <div className="bg-white -mx-6 px-8 py-4">
       <header className="flex w-auto justify-between items-center relative">
         <Link to={'/index'} className="flex items-center gap-1">
-        <LuMapPinHouse className='size-7' />
+          <LuMapPinHouse className='size-7' />
           <span className="font-bold text-xl hidden sm:block">TravelMate AI</span>
         </Link>
 
@@ -77,7 +82,7 @@ function Header({ handleSearch }) {
 
       {isMenuOpen && (
         <div className="bg-white border border-gray-300 rounded-lg mt-4 p-4">
-          <Link to="'/index'" className="block text-gray-600 hover:text-primary py-2">Stays</Link>
+          <Link to="/index" className="block text-gray-600 hover:text-primary py-2">Stays</Link>
           <Link to="/create-trip" className="block text-gray-600 hover:text-primary py-2">Experiences</Link>
 
           {!user ? (
@@ -89,7 +94,7 @@ function Header({ handleSearch }) {
             <>
               <Link to="/account" className="block text-gray-600 hover:text-primary py-2">Account</Link>
               <button
-                className="block text-gray-600 bg-transparent text-underline hover:text-primary py-2"
+                className="block text-gray-600 bg-transparent text-underline hover:text-primary hover:underline py-2"
                 onClick={logout}
               >
                 Logout
